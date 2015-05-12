@@ -2,6 +2,9 @@
 {PassThrough} = require "stream"
 Promise = require "bluebird"
 net = require "net"
+
+types = require "./types"
+
 class Parser
 	module.exports = @
 	
@@ -133,7 +136,8 @@ class Parser
 						data = Buffer.concat buffer
 						buffer = []
 						[type] = data
-						callback type, data.slice 1
+
+						callback types.byId[type].name, data.slice 1
 					nul++
 				else
 					nul = -1

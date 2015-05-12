@@ -30,7 +30,7 @@ session.create("test")
 		});
 	})
 	.then(function (count) {
-		console.log("Found " + count + "results.");
+		console.log("Found " + count + " results.");
 	})
 	.catch(function (error){
 		console.error(error);
