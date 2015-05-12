@@ -1,0 +1,21 @@
+{
+  "name": "basex-stream",
+  "version": "0.1.0",
+  "description": "BaseX client unsing node streams",
+  "main": "lib/index.js",
+  "scripts": {
+    "prepublish": "gulp coffee",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "lodash": "^3.8.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-coffee": "^2.3.1",
+    "gulp-util": "^3.0.4"
+  }
+}
