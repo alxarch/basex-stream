@@ -1,4 +1,5 @@
 {RawBuffer, NUL} = require "./stream"
+{props} = require "bluebird"
 class Query
 	module.exports = @
 
@@ -40,9 +41,18 @@ class Query
 			parser.info output
 		
 	options: (output) -> @_command OPTIONS, output
-	info: (output) -> @_command INFO, output
+	info: (output) ->
+		@_command INFO, output
+		.then (info) ->
+			# Remove newline at start of info
+			info?.slice 1
+
 	updating: (output) -> @_command UPDATING, output
-	execute: (output) -> @_command EXECUTE, output
+	execute: (output) ->
+		# Return both query and info in single result
+		props
+			output: @_command EXECUTE, output
+			info: @_command INFO
 	close: -> @_command CLOSE
 
 	context: (value, type) ->
@@ -55,9 +65,18 @@ class Query
 			parser.info()
 
 	results: (callback) ->
+		unless typeof callback is "function"
+			# Store results as rows if no callback provided
+			rows = []
+			callback = (type, data) -> rows.push {type, data}
+
 		@session.parser.then (parser) =>
 			{_out} = @session
 			_out.write RESULTS
 			_out.write @id
 			_out.write NUL
-			parser.results callback
+			# Return both result count and info in single result
+			props
+				count: parser.results callback
+				rows: rows
+				info: @info()
