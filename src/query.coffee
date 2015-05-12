@@ -1,5 +1,5 @@
 {RawBuffer, NUL} = require "./stream"
-{props} = require "bluebird"
+{join} = require "bluebird"
 class Query
 	module.exports = @
 
@@ -50,9 +50,8 @@ class Query
 	updating: (output) -> @_command UPDATING, output
 	execute: (output) ->
 		# Return both query and info in single result
-		props
-			output: @_command EXECUTE, output
-			info: @_command INFO
+		join (@_command EXECUTE, output), @_command INFO
+
 	close: -> @_command CLOSE
 
 	context: (value, type) ->
@@ -65,10 +64,6 @@ class Query
 			parser.info()
 
 	results: (callback) ->
-		unless typeof callback is "function"
-			# Store results as rows if no callback provided
-			rows = []
-			callback = (type, data) -> rows.push {type, data}
 
 		@session.parser.then (parser) =>
 			{_out} = @session
@@ -76,7 +71,4 @@ class Query
 			_out.write @id
 			_out.write NUL
 			# Return both result count and info in single result
-			props
-				count: parser.results callback
-				rows: rows
-				info: @info()
+			join (parser.results callback), @info()

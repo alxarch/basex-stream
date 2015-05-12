@@ -1,7 +1,6 @@
 {NUL} = require "./stream"
 {PassThrough} = require "stream"
 Promise = require "bluebird"
-net = require "net"
 
 types = require "./types"
 
@@ -48,7 +47,7 @@ class Parser
 		# console.log "HEAD AFTER #{@_head?}"
 		return
 
-	watch: (host) ->
+	watch: ->
 		new Promise (resolve, reject) =>
 			nul = 0
 			port = null
@@ -56,11 +55,7 @@ class Parser
 			@_append (chunk) =>
 				if nul > 1
 					@_shift()
-					socket = net.createConnection port, host
-					socket.on "connect", ->
-						socket.write id
-						socket.write NUL
-						resolve socket
+					resolve [id, port]
 
 				else if chunk is NUL
 					nul++
@@ -117,11 +112,13 @@ class Parser
 
 	results: (callback) ->
 		unless typeof callback is "function"
-			throw new TypeError "Callback argument required"
+			rows = []
+			callback = (type, data) -> rows.push {type, data}
+
 		new Promise (resolve, reject) =>
 			buffer = []
 			nul = 0
-			n = 0
+			count = 0
 			@_append (chunk) =>
 				if nul > 0
 					@_shift()
@@ -129,10 +126,10 @@ class Parser
 					if err
 						reject new Error "#{chunk.slice 1}"
 					else
-						resolve n
+						resolve {count, rows}
 				else if chunk is NUL
 					if nul < 0
-						n++
+						count++
 						data = Buffer.concat buffer
 						buffer = []
 						[type] = data

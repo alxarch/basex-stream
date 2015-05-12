@@ -127,9 +127,8 @@ class Session
 			@_out.write name
 			@_out.write NUL
 			unless @events.socket?
-				parser.watch host
-				.then (socket) =>
-					socket.pipe(new Clean).pipe(@events)
+				parser.watch().spread (id, port) =>
+					@events.connect id, host, port
 			parser.info()
 
 	command: (cmd, output) ->

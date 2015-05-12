@@ -1,40 +1,37 @@
-{Transform} = require "stream"
-{NUL} = require "./stream"
-class Events extends Transform
+{PassThrough} = require "stream"
+{NUL, Clean} = require "./stream"
+{EventEmitter} = require "events"
+net = require "net"
 
+class Events extends EventEmitter
 	module.exports = @
-	constructor: (options={}) ->
-		options.readableObjectMode = yes
-		super options
-		@nul = null
-		@event = {}
+	constructor: ->
 		@socket = null
-		@on "pipe", (socket) =>
-			if @socket?
-				throw new Error "Multiple pipes not supported"
-			@socket = socket
+		ok = no
+		nul = 0
+		name = new PassThrough
+		data = new PassThrough
+		@stream = new Clean()
+		@stream.on "data", (chunk) =>
+			unless ok
+				[err] = chunk
+				if err
+					throw new Error "Failed to monitor events."
+				ok = yes
+				return
 
-		@on "unpipe", => @socket = null
-
-	_transform: (chunk, encoding, callback) ->
-		unless @nul?
-			@nul = 0
-			[err] = chunk
-			if err
-				throw new Error "Failed to monitor events."
+			if chunk is NUL
+				if nul++ % 2
+					@emit "#{name.read()}", data.read()
+			else if nul % 2
+				data.write chunk
 			else
-				console.log "Monitor up"
-			callback()
-			return
+				name.write chunk
 
-		if chunk is NUL
-			@nul++
-		else
-			switch @nul % 2
-				when 0
-					@event.name = "#{chunk}"
-				when 1
-					@event.data = chunk
-					@push @event
-		callback()
+	connect: (id, host, port) ->
+		@socket = net.createConnection port, host
+		@socket.pipe @stream
+		@socket.on "connect", =>
+			@socket.write id
+			@socket.write NUL
 		return
