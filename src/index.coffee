@@ -1,2 +1,1 @@
-Session = require "./session"
-module.exports = (options) -> new Session options
+module.expotrs = require "./session"

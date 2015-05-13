@@ -25,6 +25,9 @@ class Session
 		pass: "admin"
 	
 	constructor: (options) ->
+		unless @ instanceof Session
+			return new Session options
+
 		{user, pass, host, port} = @options = assign {}, defaults, options
 		@socket = net.createConnection port, host
 		@events = new Events()
