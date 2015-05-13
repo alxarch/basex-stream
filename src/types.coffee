@@ -1,4 +1,4 @@
-{indexBy} = require "lodash"
+{indexBy} = require "./helpers"
 
 module.exports = types = [
 	{

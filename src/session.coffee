@@ -1,11 +1,10 @@
-{assign} = require "lodash"
 net = require "net"
 Promise = require "bluebird"
 Query = require "./query"
 {Readable} = require "stream"
 {Clean, Smudge, NUL, Monitor, RawBuffer} = require "./stream"
 Parser = require "./parser"
-{md5sum} = require "./helpers"
+{parseinfo, assign, md5sum} = require "./helpers"
 Events = require "./events"
 class Session
 	module.exports = @
@@ -139,3 +138,6 @@ class Session
 			if output?
 				p.out.pipe output
 			p
+	info: ->
+		@command "INFO"
+		.spread (output) -> parseinfo output
