@@ -159,7 +159,7 @@ Watch
 				append (chunk) ->
 					if nul > 1
 						@_shift()
-						resolve [id, port]
+						resolve {id, port}
 
 					else if chunk is NUL
 						nul++

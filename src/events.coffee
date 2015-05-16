@@ -17,7 +17,7 @@ module.exports = class Events extends EventEmitter
 			{host} = @session.options
 			@session.io (input, output, parse) =>
 				parse.watch()
-				.spread (id, port) =>
+				.then ({id, port}) =>
 					@_connect id, host, port
 				.then =>
 					@_watch event
