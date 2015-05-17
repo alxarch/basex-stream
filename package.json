@@ -1,14 +1,14 @@
 {
   "name": "basex-stream",
   "version": "0.1.0",
-  "description": "BaseX client unsing node streams",
+  "description": "BaseX client using node streams",
   "main": "lib/index.js",
   "scripts": {
     "prepublish": "gulp coffee",
     "test": "mocha --compilers litcoffee:coffee-script/register --compilers coffee:coffee-script/register test/"
   },
   "author": "Alexandros Sigalas <alxarch@gmail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "bluebird": "^2.9.25",
     "lodash": "^3.8.0"
