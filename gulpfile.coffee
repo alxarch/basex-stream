@@ -3,7 +3,7 @@ coffee = require "gulp-coffee"
 {log} = require "gulp-util"
 
 gulp.task "coffee", ->
-	gulp.src "./src/**/*.coffee"
+	gulp.src "./src/**/*coffee"
 	.pipe coffee
 		bare: yes
 	.on "error", log

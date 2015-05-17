@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "prepublish": "gulp coffee",
-    "test": "mocha --compilers coffee:coffee-script/register test/"
+    "test": "mocha --compilers litcoffee:coffee-script/register --compilers coffee:coffee-script/register test/"
   },
   "author": "Alexandros Sigalas <alxarch@gmail.com>",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "lodash": "^3.8.0"
   },
   "devDependencies": {
+    "chai": "^2.3.0",
     "gulp": "^3.8.11",
     "gulp-coffee": "^2.3.1",
     "gulp-util": "^3.0.4",
