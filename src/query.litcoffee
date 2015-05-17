@@ -93,7 +93,7 @@ and `data` is a [buffer][buffer] containing the result output.
 
 		results: (callback, info) ->
 			@write RESULTS, @id, NUL
-			read.results callback
+			@read.results callback
 			.then (results) =>
 				if info
 					@info().then (info) ->

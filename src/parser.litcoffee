@@ -162,6 +162,7 @@ If a `callback` is provided the `rows` array will be empty but `count` will
 still hold the total number of results returned.
 
 		results: (callback) ->
+			rows = null
 			unless typeof callback is "function"
 				rows = []
 				callback = (type, data) -> rows.push {type, data}
