@@ -101,7 +101,10 @@ it ecounters.
 										item.unpipe output
 										resolve written.concat yes
 							else if item?
-								output.write item, -> resolve written.concat yes
+								unless typeof item is "string" or item instanceof Buffer
+									item = "#{item}"
+								output.write item, ->
+									resolve written.concat yes
 
 							else
 								resolve written.concat no
