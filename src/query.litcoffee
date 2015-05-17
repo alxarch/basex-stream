@@ -36,7 +36,9 @@ use `query.options()`.
 
 		options: () ->
 			@_command OPTIONS
-			.then (opt) -> "#{opt}"
+			.then (opt) ->
+				# TODO: convert options to object
+				"#{opt}"
 
 To receive information on a query's last excution time, use `query.info`.
 This method returns `null` until the first query execution. By default both

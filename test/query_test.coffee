@@ -3,25 +3,49 @@ basex = Session = require "../src/session"
 
 describe "BaseX queries", ->
 	session = new Session()
-
+	db = "test_#{Date.now()}"
+	before -> session.create db
 	it "returns query options", (done) ->
 		xql = """
 		declare option output:method "json";
 		declare option output:json "lax";
-		declare option output:cdata-section-elements "foo bar";
 		<json type="object"/>
 		"""
 		session.query xql
 		.then (q) ->
 			q.options()
 			.then (options) ->
-				console.dir options
+				assert.equal options, "json=lax=true,method=json"
 				done()
 		.catch done
+
+
+	it "returns updating", (done) ->
+		xql = """
+			delete node db:open("#{db}")/test
+		"""
+		session.query "1 to 10"
+		.then (q) ->
+			q.updating()
+			.then (upd) ->
+				assert.isFalse upd
+			.then ->
+				q.close()
+		.then ->
+			session.query xql
+		.then (q) ->
+			q.updating()
+			.then (upd) ->
+				assert.isTrue upd
+			.then ->
+				q.close()
+		.then -> done()
+		.catch done
+
+
 	it "handles errors gracefully", (done) ->
 		session.command "foo"
 		.catch (err) ->
-			console.log err
 			assert.notEqual err.message.indexOf("Unknown command: foo."), -1
 			null
 		.then ->
