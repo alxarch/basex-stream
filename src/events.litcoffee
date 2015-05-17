@@ -22,13 +22,14 @@ is used.
 				if ready
 					watch event, read, write
 				else
-					{host} = session
+					{host} = session.options
 					read.watch()
-					.then ({id, port}) -> connect id, host, port
+					.spread (id, port) -> connect id, host, port
 					.then (socket) ->
 						init socket
 						ready = yes
-						watch event, read, write
+
+					watch event, read, write
 
 		Promise = require "bluebird"
 		{RawBuffer, NUL} = require "./stream"
@@ -37,7 +38,10 @@ is used.
 		UNWATCH = new RawBuffer [11]
 
 		monitored = {}
-
+		nul = 0
+		{PassThrough} = require "stream"
+		name = new PassThrough
+		data = new PassThrough
 		ondata  = (chunk) ->
 			if chunk is NUL
 				if nul++ % 2
@@ -77,6 +81,7 @@ is used.
 			return
 
 		connect = (id, host, port) ->
+
 			net = require "net"
 			new Promise (resolve, reject) ->
 				socket = net.createConnection port, host

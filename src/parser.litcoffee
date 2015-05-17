@@ -201,14 +201,15 @@ each session. It returns a `Promise` of an object with keys `port` and `id`.
 
 
 		watch: ->
+
 			new Promise (resolve, reject) ->
 				nul = 0
 				port = null
 				id = null
 				append (chunk) ->
 					if nul > 1
-						@_shift()
-						resolve {id, port}
+						shift()
+						resolve [id, port]
 
 					else if chunk is NUL
 						nul++
