@@ -15,7 +15,7 @@ describe "BaseX queries", ->
 		.then (q) ->
 			q.options()
 			.then (options) ->
-				assert.equal options, "json=lax=true,method=json"
+				assert.isObject options
 				done()
 		.catch done
 
@@ -70,7 +70,7 @@ describe "BaseX queries", ->
 			.then ->
 				done()
 		.catch done
-		
+
 	it "binds variables", (done) ->
 		xql = """
 		declare variable $test external := 0;

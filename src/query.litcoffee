@@ -5,21 +5,9 @@ Query instances are used to execute XQUERY on the server.
 
 	module.exports = class Query
 
-		{RawBuffer, NUL} = require "./stream"
 
 Each query instance is a pre-parsed XQUERY expression residing on the server.
 Each query is assigned an id by the server.
-There are 9 commands associated with query instances:
-
-		CLOSE = new RawBuffer [2]
-		BIND = new RawBuffer [3]
-		RESULTS = new RawBuffer [4]
-		EXECUTE = new RawBuffer [5]
-		INFO = new RawBuffer [6]
-		OPTIONS = new RawBuffer [7]
-		CONTEXT = new RawBuffer [14]
-		UPDATING = new RawBuffer [30]
-		FULL = new RawBuffer [31]
 
 		constructor: (@id, @read, @write) ->
 			return
@@ -36,9 +24,7 @@ use `query.options()`.
 
 		options: () ->
 			@_command OPTIONS
-			.then (opt) ->
-				# TODO: convert options to object
-				"#{opt}"
+			.then (opt) -> parseoptions "#{opt}"
 
 To receive information on a query's last excution time, use `query.info`.
 This method returns `null` until the first query execution. By default both
@@ -110,5 +96,24 @@ After a query is no longer usefull it should be closed by `query.close()` to
 free up server resources.
 
 		close: -> @_command CLOSE
+
+
+There are 9 protocol commands associated with query instances:
+
+	{RawBuffer} = require "./stream"
+
+	CLOSE = new RawBuffer [2]
+	BIND = new RawBuffer [3]
+	RESULTS = new RawBuffer [4]
+	EXECUTE = new RawBuffer [5]
+	INFO = new RawBuffer [6]
+	OPTIONS = new RawBuffer [7]
+	CONTEXT = new RawBuffer [14]
+	UPDATING = new RawBuffer [30]
+	FULL = new RawBuffer [31]
+
+
+	{parseoptions} = require "./helpers"
+	{NUL} = require "./stream"
 
 [buffer]: https://nodejs.org/api/buffer.html
