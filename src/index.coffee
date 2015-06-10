@@ -1,1 +1,1 @@
-module.expotrs = require "./session"
+module.exports = require "./session"
